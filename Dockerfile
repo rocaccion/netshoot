@@ -1,4 +1,6 @@
-FROM golang:1.12.9-alpine
+FROM golang:1.13-alpine
+
+ENV ENV="/root/.ashrc"
 
 RUN set -ex \
     && echo "http://nl.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories \
@@ -11,6 +13,7 @@ RUN set -ex \
     bind-tools \
     bird \
     bridge-utils \
+    build-base \
     busybox-extras \
     conntrack-tools \
     curl \
@@ -58,7 +61,7 @@ RUN wget https://github.com/bcicen/ctop/releases/download/v0.7.1/ctop-0.7.1-linu
 
 # Installing cockroach
 ARG COCKROACH_VERSION=v19.1.3
-RUN wget https://binaries.cockroachdb.com/cockroach-v${COCKROACH_VERSION}.linux-musl-amd64.tgz -O - | tar -xz -O > /usr/local/bin/cockroach && chmod +x /usr/local/bin/cockroach
+RUN wget https://binaries.cockroachdb.com/cockroach-${COCKROACH_VERSION}.linux-musl-amd64.tgz -O - | tar -xz -O > /usr/local/bin/cockroach && chmod +x /usr/local/bin/cockroach
 
 # Installing etcdctl
 ARG ETCD_VERSION=v3.3.12
@@ -69,12 +72,24 @@ RUN wget https://dl.min.io/client/mc/release/linux-amd64/mc -O /usr/local/bin/mc
 
 # Installing grpcurl
 ARG GRPCURL_VERSION=1.3.1
-RUN wget https://github.com/fullstorydev/grpcurl/releases/download/v${GRPCURL_VERSION}/grpcurl_${GRPCURL_VERSION}_linux_x86_64.tar.gz -O - | tar -xz -O > /usr/local/bin/grpcurl && chmod +x /usr/local/bin/grpcurl
+RUN wget https://github.com/fullstorydev/grpcurl/releases/download/v${GRPCURL_VERSION}/grpcurl_${GRPCURL_VERSION}_linux_x86_64.tar.gz -O - | tar -xvz -O > /usr/local/bin/grpcurl && chmod +x /usr/local/bin/grpcurl
 
 # Installing tile38
 ARG TILE38_VERSION=1.17.5
-RUN wget https://github.com/tidwall/tile38/releases/download/${TILE38_VERSION}/tile38-${TILE38_VERSION}-linux-amd64.tar.gz -O - | tar -xzf - -C /usr/local \
-    && mv tile38-${TILE38_VERSION}-linux-amd64 tile38
+RUN wget https://github.com/tidwall/tile38/releases/download/${TILE38_VERSION}/tile38-${TILE38_VERSION}-linux-amd64.tar.gz -O - | tar xvzf - -C /usr/local \
+    && mv /usr/local/tile38-${TILE38_VERSION}-linux-amd64 /usr/local/tile38
+
+# Support private repos
+ARG GITHUB_TOKEN
+ARG GOPRIVATE=github.com/rocaccion/*
+RUN git config --global url."https://${GITHUB_TOKEN}:@github.com/".insteadOf "https://github.com/"
+
+# Installing seabolt
+ARG SEABOLT_VERSION=1.7.4
+RUN wget https://github.com/neo4j-drivers/seabolt/releases/download/v${SEABOLT_VERSION}/seabolt-${SEABOLT_VERSION}-Linux-alpine-3.9.3.tar.gz -O - | tar xvzf - --strip-components=1 -C /
+
+# Installing outsafe-testing
+RUN go get -v github.com/rocaccion/outsafe-testing
 
 # Settings
 ADD motd /etc/motd

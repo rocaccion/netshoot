@@ -3,6 +3,10 @@ cat /etc/motd
 export CLICOLOR=1
 export LSCOLORS=GxFxCxDxBxegedabagaced
 export LS_OPTIONS='--color=auto'
+export GO111MODULE=on
+export GOPRIVATE=github.com/rocaccion/*
+export PKG_CONFIG_PATH=/usr/local/share/pkgconfig
+export LD_LIBRARY_PATH=/usr/local/lib64
 
 
 # aliases
@@ -37,4 +41,4 @@ function title {
 }
 
 prompt
-
+cd /go/src/github.com/rocaccion/outsafe-testing
