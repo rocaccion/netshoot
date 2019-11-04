@@ -33,6 +33,7 @@ RUN set -ex \
     ipvsadm \
     libc6-compat \
     liboping \
+    libressl-dev \
     mtr \
     net-snmp-tools \
     netcat-openbsd \
@@ -71,7 +72,7 @@ RUN GO111MODULE=on go get -v go.etcd.io/etcd/etcdctl@${ETCD_VERSION}
 RUN wget https://dl.min.io/client/mc/release/linux-amd64/mc -O /usr/local/bin/mc && chmod +x /usr/local/bin/mc
 
 # Installing grpcurl
-ARG GRPCURL_VERSION=1.3.1
+ARG GRPCURL_VERSION=1.4.0
 RUN wget https://github.com/fullstorydev/grpcurl/releases/download/v${GRPCURL_VERSION}/grpcurl_${GRPCURL_VERSION}_linux_x86_64.tar.gz -O - | tar -xvz -O > /usr/local/bin/grpcurl && chmod +x /usr/local/bin/grpcurl
 
 # Installing tile38
