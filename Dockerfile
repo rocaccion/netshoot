@@ -1,4 +1,4 @@
-FROM golang:1.13-alpine
+FROM golang:1.14.7-alpine
 
 ENV ENV="/root/.ashrc"
 
