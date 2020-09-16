@@ -1,4 +1,4 @@
-FROM golang:1.13-alpine
+FROM golang:1.15-alpine
 
 ENV ENV="/root/.ashrc"
 
@@ -64,13 +64,6 @@ RUN wget https://github.com/bcicen/ctop/releases/download/v0.7.1/ctop-0.7.1-linu
 ARG COCKROACH_VERSION=v19.1.3
 RUN wget https://binaries.cockroachdb.com/cockroach-${COCKROACH_VERSION}.linux-musl-amd64.tgz -O - | tar -xz -O > /usr/local/bin/cockroach && chmod +x /usr/local/bin/cockroach
 
-# Installing etcdctl
-ARG ETCD_VERSION=v3.3.12
-RUN GO111MODULE=on go get -v go.etcd.io/etcd/etcdctl@${ETCD_VERSION}
-
-# Installing minio
-RUN wget https://dl.min.io/client/mc/release/linux-amd64/mc -O /usr/local/bin/mc && chmod +x /usr/local/bin/mc
-
 # Installing grpcurl
 ARG GRPCURL_VERSION=1.4.0
 RUN wget https://github.com/fullstorydev/grpcurl/releases/download/v${GRPCURL_VERSION}/grpcurl_${GRPCURL_VERSION}_linux_x86_64.tar.gz -O - | tar -xvz -O > /usr/local/bin/grpcurl && chmod +x /usr/local/bin/grpcurl
@@ -84,10 +77,6 @@ RUN wget https://github.com/tidwall/tile38/releases/download/${TILE38_VERSION}/t
 ARG GITHUB_TOKEN
 ARG GOPRIVATE=github.com/rocaccion/*
 RUN git config --global url."https://${GITHUB_TOKEN}:@github.com/".insteadOf "https://github.com/"
-
-# Installing seabolt
-ARG SEABOLT_VERSION=1.7.4
-RUN wget https://github.com/neo4j-drivers/seabolt/releases/download/v${SEABOLT_VERSION}/seabolt-${SEABOLT_VERSION}-Linux-alpine-3.9.3.tar.gz -O - | tar xvzf - --strip-components=1 -C /
 
 # Installing outsafe-testing
 RUN go get -v github.com/rocaccion/outsafe-testing
